@@ -23,4 +23,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
     path('duvida/', DuvidaView.as_view(), name='duvida'),
+    path('apoio/', ApoioView.as_view(), name='apoio'),
+    path('login/', LoginView.as_view(), name='Login'),
+    path('cadastro/', InvestidorView.as_view(), name='investidor'),
+    path('contato/', ContatoView.as_view(), name='contato'),
+    path('forum/', SegurancaView.as_view(), name='forum'),
+    path('investimentos/', TipoInvestView.as_view(), name='tipoinvest'),
+    path('investidor/', InvestidorView.as_view(), name='investidor'),
+    path('ondeinvestir/', CorretoraView.as_view(), name='corretora'),
+    path('perfilinvest/', PerfilInvestView.as_view(), name='perfilinvest'),
 ]
