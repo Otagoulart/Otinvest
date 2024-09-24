@@ -18,7 +18,7 @@ class DuvidaView(View):
 
 class ApoioView(View):
     def get(self, request,):
-        apoio = Apoio.objects.all()
+        apoio = apoio.objects.all()
         return render(request, 'apoio.html', {'apoios':apoio})
     def post(self, request):
         pass
@@ -68,10 +68,71 @@ class TipoInvestView(View):
     def post(self, request):
         pass
 
-class LoginView(View):
-    def get(self, request,):
-        login = Login.objects.all()
-        return render(request, 'login.html', {'logins':login})
-    def post(self, request):
-        pass
 
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from .models import Topico, Comentario
+
+class ForumView(View):
+    def get(self, request):
+        topicos = Topico.objects.all().order_by('-criado_em')
+        return render(request, 'forum.html', {'topicos': topicos})
+
+class TopicoDetalhesView(View):
+    def get(self, request, topico_id):
+        topico = get_object_or_404(Topico, id=topico_id)
+        comentarios = topico.comentarios.all()
+        return render(request, 'topico_detalhes.html', {'topico': topico, 'comentarios': comentarios})
+
+    def post(self, request, topico_id):
+        topico = get_object_or_404(Topico, id=topico_id)
+        conteudo = request.POST.get('conteudo')
+        Comentario.objects.create(
+            topico=topico, conteudo=conteudo, autor=request.user
+        )
+        messages.success(request, 'Comentário adicionado com sucesso!')
+        return redirect('topico_detalhes', topico_id=topico.id)
+
+class CriarTopicoView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'criar_topico.html')
+
+    def post(self, request):
+        titulo = request.POST.get('titulo')
+        conteudo = request.POST.get('conteudo')
+        Topico.objects.create(
+            titulo=titulo, conteudo=conteudo, autor=request.user
+        )
+        messages.success(request, 'Tópico criado com sucesso!')
+        return redirect('forum')
+class EditarTopicoView(View):
+    def get(self, request, topico_id):
+        topico = get_object_or_404(Topico, id=topico_id)
+        return render(request, 'editar_topico.html', {'topico': topico})
+
+    def post(self, request, topico_id):
+        topico = get_object_or_404(Topico, id=topico_id)
+        topico.titulo = request.POST.get('titulo')
+        topico.save()
+        return redirect('forum')  # Redireciona de volta para o fórum
+       
+class ExcluirTopicoView(View):
+    def post(self, request, topico_id):
+        topico = get_object_or_404(Topico, id=topico_id)
+        topico.delete()
+        return redirect('forum')
+    
+class Editarcomentario(View):
+    def editar_comentario(self, request, comentario_id):
+        comentario = get_object_or_404(Comentario, id=comentario_id)
+
+        if request.method == "POST":
+            comentario.conteudo = request.POST.get("conteudo")
+            comentario.save()
+            return redirect('topico_detalhes', topico_id=comentario.topico.id)  # Redireciona para a página do tópico
+
+        return render(request, 'editar_comentario.html', {'comentario': comentario})

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Tópico - OTINVEST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        form {
+            max-width: 800px; /* Limita a largura do formulário */
+            margin: 20px auto; /* Centraliza o formulário */
+            padding: 15px;
+            background-color: #ffffff; /* Fundo branco */
+            border-radius: 5px; /* Bordas arredondadas */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve */
+        }
+
+        label {
+            display: block; /* Exibe cada rótulo em uma nova linha */
+            margin: 10px 0 5px; /* Espaçamento entre o rótulo e o campo */
+            color: #2980b9; /* Cor do texto do rótulo */
+        }
+
+        input[type="text"] {
+            width: 100%; /* Faz o campo ocupar toda a largura */
+            padding: 10px; /* Espaçamento interno */
+            border-radius: 5px; /* Bordas arredondadas */
+            border: 1px solid #ccc; /* Borda do campo */
+            margin-bottom: 15px; /* Espaçamento entre campos */
+        }
+
+        button {
+            background-color: #27ae60; /* Cor do botão */
+            color: white; /* Cor do texto do botão */
+            padding: 10px 15px; /* Espaçamento interno */
+            border-radius: 5px; /* Bordas arredondadas */
+            border: none; /* Remove borda padrão */
+            cursor: pointer; /* Cursor em forma de mão ao passar */
+            display: block; /* Faz o botão ser um bloco */
+            width: 100%; /* Faz o botão ocupar toda a largura */
+        }
+
+        button:hover {
+            background-color: #2ecc71; /* Cor ao passar o mouse */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>OTINVEST</h1>
+</header>
+
+<h1>Editar Tópico</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" name="titulo" value="{{ topico.titulo }}" required>
+    <button type="submit">Salvar</button>
+</form>
+
+</body>
+</html>
