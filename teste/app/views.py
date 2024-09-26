@@ -126,13 +126,19 @@ class ExcluirTopicoView(View):
         topico.delete()
         return redirect('forum')
     
-class Editarcomentario(View):
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Comentario
+
+class Editarcomentario(View): 
     def editar_comentario(self, request, comentario_id):
         comentario = get_object_or_404(Comentario, id=comentario_id)
 
-        if request.method == "POST":
-            comentario.conteudo = request.POST.get("conteudo")
+        if request.method == 'POST':
+            # Atualiza o conteúdo do comentário com os novos dados
+            novo_conteudo = request.POST['conteudo']
+            comentario.conteudo = novo_conteudo
             comentario.save()
-            return redirect('topico_detalhes', topico_id=comentario.topico.id)  # Redireciona para a página do tópico
+            # Redireciona de volta para a página do tópico ou onde os comentários estão listados
+            return redirect('detalhes_topico')  # Alterar se for diferente o nome da página principal
 
         return render(request, 'editar_comentario.html', {'comentario': comentario})

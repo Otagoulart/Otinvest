@@ -109,10 +109,13 @@
 
 <h2>Comentários</h2>
 <ul>
-  {% for comentario in comentarios %}
-    <li>{{ comentario.conteudo }} - por {{ comentario.autor }} em {{ comentario.criado_em }}</li>
-  {% endfor %}
-</ul>
+    {% for comentario in comentarios %}
+      <li>
+        {{ comentario.conteudo }} - por {{ comentario.autor }} em {{ comentario.criado_em }}
+        <a href="{% url 'editar_comentario' comentario.id %}">Editar</a>
+      </li>
+    {% endfor %}
+  </ul>
 
 <h3>Adicionar Comentário</h3>
 <form method="POST">
