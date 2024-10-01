@@ -11,7 +11,7 @@ class Duvida(models.Model):
 
 class Investidor(models.Model):
     id_investidor = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=50)
+    nome = models.CharField(max_length=100)
     cpf = models.CharField(max_length=11)
     datanasc = models.DateField()
     endereco = models.CharField(max_length=255)

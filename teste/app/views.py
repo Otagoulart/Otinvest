@@ -142,3 +142,24 @@ class Editarcomentario(View):
             return redirect('detalhes_topico')  # Alterar se for diferente o nome da página principal
 
         return render(request, 'editar_comentario.html', {'comentario': comentario})
+
+from django.shortcuts import render, redirect
+from .models import Investidor  # Supondo que você tenha um modelo chamado Investidor
+from .forms import InvestidorForm  # Supondo que você tenha um formulário para o Investidor
+
+class InvestidorView(View):
+    def get(self, request):
+        form = InvestidorForm()  # Cria uma instância vazia do formulário
+        return render(request, 'cadastro.html', {'form': form})  # Retorna a página com o formulário
+
+    def post(self, request):
+        form = InvestidorForm(request.POST)
+        if form.is_valid():
+            investidor = form.save()  # Salva o formulário se for válido
+            return redirect('sucesso.html')  # Redireciona para uma URL de sucesso
+        return render(request, 'cadastro.html', {'form': form})  # Retorna o formulário com erros se inválido
+
+from django.views.generic import TemplateView
+
+class SucessoView(View):
+    template_name = 'cadastro/sucesso.html'; # Caminho do template

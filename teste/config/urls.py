@@ -37,6 +37,9 @@ urlpatterns = [
     path('forum/editar-topico/<int:topico_id>/', EditarTopicoView.as_view(), name='editar_topico'),
     path('forum/excluir-topico/<int:topico_id>/', ExcluirTopicoView.as_view(), name='excluir_topico'),
     path('comentario/editar/<int:comentario_id>/', Editarcomentario.as_view(), name='editar_comentario'),
+    path('cadastro/sucesso/', SucessoView.as_view(), name='sucesso'),
 ]
+
+
 
 
