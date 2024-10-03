@@ -6,5 +6,6 @@ class InvestidorForm(forms.ModelForm):
         model = Investidor
         fields = ['nome', 'cpf', 'datanasc', 'endereco', 'cidade', 'email', 'senha']
         widgets = {
-            'senha': forms.PasswordInput(),  # Para tornar o campo de senha oculto
+            'senha': forms.PasswordInput(),  # Campo de senha oculto
+            'datanasc': forms.DateInput(attrs={'type': 'date'}),  # Para um seletor de data
         }

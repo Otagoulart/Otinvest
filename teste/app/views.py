@@ -1,87 +1,77 @@
-
-from django.shortcuts import render,redirect,get_object_or_404
-from .models import *
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import *  # Certifique-se de que você só importa o que precisa
 from django.views import View
 from django.contrib import messages
-
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Topico, Comentario, Duvida, Apoio, Investidor, PerfilInvest, Corretora, TipoInvest, Seguranca  # Adicione os modelos que você utiliza
+from .forms import InvestidorForm
+# View para a página inicial
 class IndexView(View):
     def get(self, request):
         return render(request, 'index.html')
-    
+
+# View para dúvidas
 class DuvidaView(View):
-    def get(self, request,):
-        duvida = Duvida.objects.all()
-        return render(request, 'duvida.html', {'duvidas':duvida})
-    def post(self, request):
-        pass
+    def get(self, request):
+        duvidas = Duvida.objects.all()
+        return render(request, 'duvida.html', {'duvidas': duvidas})
 
+# View para apoio
 class ApoioView(View):
-    def get(self, request,):
-        apoio = apoio.objects.all()
-        return render(request, 'apoio.html', {'apoios':apoio})
-    def post(self, request):
-        pass
+    def get(self, request):
+        apoio_list = Apoio.objects.all()  # Certifique-se de que o modelo é definido corretamente
+        return render(request, 'apoio.html', {'apoios': apoio_list})
 
+# View para cadastro de investidores
 class InvestidorView(View):
-    def get(self, request,):
-        investidor = Investidor.objects.all()
-        return render(request, 'cadastro.html', {'investidores':investidor})
+    def get(self, request):
+        form = InvestidorForm()  # Cria uma instância vazia do formulário
+        return render(request, 'cadastro.html', {'form': form})
+
     def post(self, request):
-        pass
+        form = InvestidorForm(request.POST)
+        if form.is_valid():
+            form.save()  # Salva o formulário se for válido
+            return redirect('sucesso')  # Redireciona para a URL de sucesso
+        return render(request, 'cadastro.html', {'form': form})  # Retorna o formulário com erros se inválido
 
 class PerfilInvestView(View):
-    def get(self, request,):
-        perfilinvest = PerfilInvest.objects.all()
-        return render(request, 'perfilinvest.html', {'perfilinvest':perfilinvest})
-    def post(self, request):
-        pass
+    def get(self, request):
+        perfis_invest = PerfilInvest.objects.all()
+        return render(request, 'perfilinvest.html', {'perfilinvest': perfis_invest})
 
+
+# View para contato
 class ContatoView(View):
-    def get(self, request,):
-        contato = Contato.objects.all()
-        return render(request, 'contato.html', {'contatos':contato})
-    def post(self, request):
-        pass
+    def get(self, request):
+        contatos = Contato.objects.all()
+        return render(request, 'contato.html', {'contatos': contatos})
 
+# View para segurança
+class SegurancaView(View):
+    def get(self, request):
+        seguranca = Seguranca.objects.all()
+        return render(request, 'forum.html', {'seguranca': seguranca})
 
-class  SegurancaView(View):
-    def get(self, request,):
-        seguranca= Seguranca.objects.all()
-        return render(request, 'forum.html', {'seguranca':seguranca})
-    def post(self, request):
-        pass
-
+# View para corretoras
 class CorretoraView(View):
+    def get(self, request):
+        corretoras = Corretora.objects.all()
+        return render(request, 'ondeinvestir.html', {'corretoras': corretoras})
 
-    def get(self, request,):
-        corretora = Corretora.objects.all()
-        return render(request, 'ondeinvestir.html', {'corretoras':corretora})
-    def post(self, request):
-        pass
-
-
+# View para tipos de investimento
 class TipoInvestView(View):
-    def get(self, request,):
-        tipoinvest = TipoInvest.objects.all()
-        return render(request, 'investimento.html', {'tipoinvest':tipoinvest})
-    def post(self, request):
-        pass
+    def get(self, request):
+        tipos_invest = TipoInvest.objects.all()
+        return render(request, 'investimento.html', {'tipoinvest': tipos_invest})
 
-
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
-from .models import Topico, Comentario
-
+# View para o fórum
 class ForumView(View):
     def get(self, request):
         topicos = Topico.objects.all().order_by('-criado_em')
         return render(request, 'forum.html', {'topicos': topicos})
 
+# View para detalhes do tópico
 class TopicoDetalhesView(View):
     def get(self, request, topico_id):
         topico = get_object_or_404(Topico, id=topico_id)
@@ -97,6 +87,7 @@ class TopicoDetalhesView(View):
         messages.success(request, 'Comentário adicionado com sucesso!')
         return redirect('topico_detalhes', topico_id=topico.id)
 
+# View para criar tópico
 class CriarTopicoView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'criar_topico.html')
@@ -109,6 +100,8 @@ class CriarTopicoView(LoginRequiredMixin, View):
         )
         messages.success(request, 'Tópico criado com sucesso!')
         return redirect('forum')
+
+# View para editar tópico
 class EditarTopicoView(View):
     def get(self, request, topico_id):
         topico = get_object_or_404(Topico, id=topico_id)
@@ -117,49 +110,33 @@ class EditarTopicoView(View):
     def post(self, request, topico_id):
         topico = get_object_or_404(Topico, id=topico_id)
         topico.titulo = request.POST.get('titulo')
+        topico.conteudo = request.POST.get('conteudo')  # Não se esqueça de atualizar o conteúdo
         topico.save()
         return redirect('forum')  # Redireciona de volta para o fórum
-       
+
+# View para excluir tópico
 class ExcluirTopicoView(View):
     def post(self, request, topico_id):
         topico = get_object_or_404(Topico, id=topico_id)
         topico.delete()
+        messages.success(request, 'Tópico excluído com sucesso!')
         return redirect('forum')
-    
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Comentario
 
-class Editarcomentario(View): 
-    def editar_comentario(self, request, comentario_id):
+class EditarComentarioView(View):  # Use a convenção de nomenclatura correta
+    def get(self, request, comentario_id):
         comentario = get_object_or_404(Comentario, id=comentario_id)
-
-        if request.method == 'POST':
-            # Atualiza o conteúdo do comentário com os novos dados
-            novo_conteudo = request.POST['conteudo']
-            comentario.conteudo = novo_conteudo
-            comentario.save()
-            # Redireciona de volta para a página do tópico ou onde os comentários estão listados
-            return redirect('detalhes_topico')  # Alterar se for diferente o nome da página principal
-
         return render(request, 'editar_comentario.html', {'comentario': comentario})
 
-from django.shortcuts import render, redirect
-from .models import Investidor  # Supondo que você tenha um modelo chamado Investidor
-from .forms import InvestidorForm  # Supondo que você tenha um formulário para o Investidor
+    def post(self, request, comentario_id):
+        comentario = get_object_or_404(Comentario, id=comentario_id)
+        novo_conteudo = request.POST['conteudo']
+        comentario.conteudo = novo_conteudo
+        comentario.save()
+        return redirect('detalhes_topico')  # Ajuste conforme necessário
 
-class InvestidorView(View):
-    def get(self, request):
-        form = InvestidorForm()  # Cria uma instância vazia do formulário
-        return render(request, 'cadastro.html', {'form': form})  # Retorna a página com o formulário
-
-    def post(self, request):
-        form = InvestidorForm(request.POST)
-        if form.is_valid():
-            investidor = form.save()  # Salva o formulário se for válido
-            return redirect('sucesso.html')  # Redireciona para uma URL de sucesso
-        return render(request, 'cadastro.html', {'form': form})  # Retorna o formulário com erros se inválido
-
-from django.views.generic import TemplateView
-
+# View para a página de sucesso
 class SucessoView(View):
-    template_name = 'cadastro/sucesso.html'; # Caminho do template
+    template_name = 'cadastro/sucesso.html'  # Caminho do template
+
+    def get(self, request):
+        return render(request, self.template_name)

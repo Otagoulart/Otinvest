@@ -130,7 +130,7 @@
 </div>
 
 <ul>
-    {% for topico in topicos %}
+    {% for topico in topico %}
       <li>
         <a href="{% url 'topico_detalhes' topico.id %}">{{ topico.titulo }}</a> - por {{ topico.autor }} em {{ topico.criado_em }}
         <a href="{% url 'editar_topico' topico.id %}">Editar</a>

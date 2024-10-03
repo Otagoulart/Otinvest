@@ -1,5 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
 
+# Modelo para Dúvidas
 class Duvida(models.Model):
     duvida = models.TextField()
 
@@ -10,7 +12,7 @@ class Duvida(models.Model):
         return self.duvida
 
 class Investidor(models.Model):
-    id_investidor = models.AutoField(primary_key=True)
+    id_investidor = models.AutoField(primary_key=True)  # Este é o campo principal
     nome = models.CharField(max_length=100)
     cpf = models.CharField(max_length=11)
     datanasc = models.DateField()
@@ -25,26 +27,8 @@ class Investidor(models.Model):
     def __str__(self):
         return f"{self.nome} - {self.id_investidor}"
 
-from django.db import models
 
-class PerfilInvest(models.Model):
-    id_capitalinvest = models.DecimalField(
-    max_digits=10, 
-    decimal_places=2, 
-    primary_key=True, 
-    default=100  
-)
-    investidor = models.ForeignKey('Investidor', on_delete=models.CASCADE)
-    descricao = models.CharField(max_length=50)
-    salario = models.DecimalField(max_digits=10, decimal_places=2)
-
-    class Meta:
-        verbose_name_plural = "Perfis de Investimento"
-
-    def __str__(self):
-        return self.descricao
-
-
+# Modelo para Segurança
 class Seguranca(models.Model):
     titulo = models.CharField(max_length=50)
     dicas = models.TextField()
@@ -56,6 +40,7 @@ class Seguranca(models.Model):
     def __str__(self):
         return self.titulo
 
+# Modelo para Contato
 class Contato(models.Model):
     numero = models.CharField(max_length=15)
     email = models.EmailField()
@@ -68,6 +53,7 @@ class Contato(models.Model):
     def __str__(self):
         return self.email
 
+# Modelo para Tipos de Investimentos
 class TipoInvest(models.Model):
     tipo_de_investimento = models.CharField(max_length=255)
     area = models.CharField(max_length=255)
@@ -81,6 +67,7 @@ class TipoInvest(models.Model):
     def __str__(self):
         return self.tipo_de_investimento
 
+# Modelo para Corretoras
 class Corretora(models.Model):
     nome = models.CharField(max_length=255)
     area = models.CharField(max_length=255)
@@ -93,9 +80,7 @@ class Corretora(models.Model):
     def __str__(self):
         return self.nome
 
-from django.db import models
-from django.contrib.auth.models import User
-
+# Modelo para Tópicos
 class Topico(models.Model):
     titulo = models.CharField(max_length=255)
     conteudo = models.TextField()
@@ -105,12 +90,37 @@ class Topico(models.Model):
     def __str__(self):
         return self.titulo
 
-
+# Modelo para Comentários
 class Comentario(models.Model):
     conteudo = models.TextField()
     autor = models.ForeignKey(User, on_delete=models.CASCADE)
-    topico = models.ForeignKey(Topico, related_name='comentarios', on_delete=models.CASCADE)
+    topico = models.ForeignKey(Topico, on_delete=models.CASCADE, default=1)
     criado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.conteudo[:20]
+        return self.conteudo[:20]  # Retorna os primeiros 20 caracteres do conteúdo do comentário
+
+class Apoio(models.Model):
+    descricao = models.TextField()
+
+    class Meta:
+        verbose_name_plural = "Apoios"
+
+    def __str__(self):
+        return self.descricao
+    
+# Modelo para Perfis de Investimento
+class PerfilInvest(models.Model):
+    idperfilinvest = models.BigAutoField(primary_key=True)  # Exemplo correto
+    investidor = models.ForeignKey(Investidor, on_delete=models.CASCADE)
+    descricao = models.CharField(max_length=50)
+    salario = models.DecimalField(max_digits=10, decimal_places=2)
+    id_capitalinvest = models.DecimalField(max_digits=10, decimal_places=2, default=100)
+
+    class Meta:
+        verbose_name_plural = "Perfis de Investimento"
+
+    def __str__(self):
+        return self.descricao
+
+
