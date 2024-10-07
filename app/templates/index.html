@@ -107,24 +107,46 @@
 <body>
 
 <header>
+    {% if user.is_authenticated %}
+
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <h1>OTINVEST</h1>
+        <button type="submit">Logout</button>
+    </form>
+    <nav>
+        <a href="quiz">Qual meu tipo de investidor?</a>
+        <a href="{% url 'forum_home' %}">Fórum de dicas e dúvidas</a>
+        <a href="investimentos">Relatos de investimentos e corretoras</a>
+        <a href="#contato">Contato</a>
+        <a href="#sobre">Sobre</a>
+        <a href="apoio">Meus investimentos</a>
+        <a href="apoio">Meu perfil</a>
+
+    {% else %}
     <h1>OTINVEST</h1>
     <nav>
-        <a href="#perfil-de-investimento">Perfil de investimento</a>
-        <a href="forum">Fórum de dicas e segurança</a>
-        <a href="#investimentoss">Investimentos</a>
+        <a href="/">Home</a>
         <a href="#contato">Contato</a>
-        <a href="#duvidas">Tire suas dúvidas</a>
-        <a href="#conteudo-apoio">Conteúdo de apoio</a>
-        <a href="#onde-investir">Onde investir?</a>
-        <a href="#login">Login</a>
-        <a href="#cadastro">Cadastro</a>
+        <a href="#sobre">Sobre</a>
+    </nav>
+
+    {% endif %}
     </nav>
 </header>
-
+{% if user.is_authenticated %}
 <section class="hero-section">
-    <h1>Bem-vindo ao OTINVEST</h1>
+    <h1>Bem-vindo ao OTINVEST, {{ user.username }}!</h1>
     <p>Aprimore seus conhecimentos e invista com segurança</p>
     <button>Saiba Mais</button>
+</section>
+
+{% else %}
+<section class="hero-section">
+    <h1>Bem-vindo ao OTINVEST, visitante!</h1>
+    <p>Aprimore seus conhecimentos e invista com segurança</p>
+    <a href="login">Login</a>
+    <a href="register">Cadastro</a>
 </section>
 
 <section class="about-section" id="sobre">
@@ -134,6 +156,6 @@
         Nosso objetivo é capacitar nossos usuários a tomarem decisões de investimento informadas e a se protegerem contra fraudes financeiras, promovendo um ambiente seguro para troca de experiências e conhecimento.
     </p>
 </section>
-
+{% endif %}
 </body>
 </html>
